@@ -193,7 +193,7 @@ module Omega
                         @current_frame = last_frame if @current_frame > last_frame
                     end
                 end
-                
+
                 @frames[@animations[@current_animation][@current_frame.to_i]].draw_rot((@flip.x) ? @position.x + @width * @scale.x - @width*2 * @scale.x * @origin.x : @position.x,
                                                                                         (@flip.y) ? @position.y + @height * @scale.y - @height*2 * @scale.y * @origin.y : @position.y,
                                                                                         @position.z,
