@@ -1,17 +1,19 @@
 class TextBox
 
-  def initialize(text)
+  def initialize(text, on_left)
 
     @box = Omega::Sprite.new("./assets/images/dialog_box.png")
     @box.z = 10000001
     @box.set_scale(3.5, 2.25)
     @box.x = Omega.width / 2 - (320 * 3.5) / 2
-    @box.y = 3
+    @box.y = Omega.height - @box.height * 2.5
+
+    @on_left = on_left
 
     @buffer         = text
     @current_buffer = ""
 
-    @BUFFER_STARTX  = @box.x + 180
+    @BUFFER_STARTX  = @box.x + 80
     @BUFFER_STARTY  = @box.y + 40
 
     @BUFFER_MAX_COL  = 80
@@ -21,6 +23,7 @@ class TextBox
     @posy_buffer    = 0
 
   end
+
 
   def set_y(y)
     @box.y = y
@@ -64,6 +67,10 @@ class TextBox
     return (@buffer.size() == 0 and @current_buffer.size() == 0)
   end
 
+  def is_right
+    return @on_left
+  end
+
 end
 
 class TextBoxHandler
@@ -71,11 +78,13 @@ class TextBoxHandler
   def initialize
     @boxes = []
     @sounds = []
+    @full_text = []
+    @current_index = 0
   end
 
   def play_current_sound
-    if @sounds[0] != nil
-      current_sound = @sounds[0]
+    if @sounds[@current_index] != nil
+      current_sound = @sounds[@current_index]
       $sounds[current_sound.split("$")[1]].play()
     end
   end
@@ -86,20 +95,78 @@ class TextBoxHandler
     end
   end
 
-  def add_text(full_text)
-    full_text.split("|").each do |text|
-      real_text = []
-      sound = nil
-      text.split(" ").each do |text_elem|
-        if text_elem[0] == '$'
-          sound = text_elem
-        else
-          real_text.push(text_elem)
-        end
+  def set_left_character(chara)
+    @left_character = Omega::Sprite.new(chara)
+    @left_character.y = Omega.height / 2 - @left_character.height / 2 - 60
+  end
+
+  def set_right_character(chara)
+    @right_character = Omega::Sprite.new(chara)
+    @right_character.y = Omega.height / 2 - @right_character.height / 2 - 60
+  end
+
+  def set_left_chara_should_go
+      dest = 30
+      if @left_character.x > dest
+        @left_character.x = dest
+      elsif @left_character.x < dest
+        @left_character.x += 20
+      else
+        return true
       end
-      @sounds.push(sound)
-      @boxes.push(TextBox.new(real_text.join(" ")))
-      self.play_current_sound()
+    return false
+  end
+
+  def set_right_chara_should_go
+    dest = Omega.width - @right_character.width - 30
+    if @right_character.x > dest
+      @right_character.x -= 20
+    elsif @right_character.x < dest
+      @right_character.x = dest
+    else
+      return true
+    end
+    return false
+  end
+
+  def add_text(full_text, is_right)
+    if is_right
+      @full_text.push("right|" + full_text)
+    else
+      @full_text.push("left|" + full_text)
+    end
+  end
+
+  def start
+    added_left_once = false
+    added_right_once = false
+
+    @full_text.each do |partext|
+      ctext = partext.split("|")
+      isLeft = ctext[0] == "left"
+      ctext.delete_at(0)
+
+      ctext.each do |text|
+        real_text = []
+        sound = nil
+
+        text.split(" ").each do |text_elem|
+          if text_elem[@current_index] == '$'
+            sound = text_elem
+          else
+            real_text.push(text_elem)
+          end
+        end
+        @sounds.push(sound)
+        if isLeft
+          @boxes.push(TextBox.new(real_text.join(" "), true))
+          added_left_once = true
+        else
+          @boxes.push(TextBox.new(real_text.join(" "), false))
+          added_right_once = true
+        end
+        self.play_current_sound()
+      end
     end
   end
 
@@ -107,30 +174,42 @@ class TextBoxHandler
     if self.finished()
       return
     end
-    if @boxes[0].finished()
-      @boxes  = @boxes[1..@boxes.size()]
-      @sounds = @sounds[1..@sounds.size()]
+    set_left_chara_should_go
+    set_right_chara_should_go
+    if @boxes[@current_index].finished()
       self.play_current_sound()
+      @current_index += 1
       return
     end
-    if @boxes[0].is_buffer_full() or @boxes[0].has_finished_to_write()
+    if @boxes[@current_index].is_buffer_full() or @boxes[@current_index].has_finished_to_write()
       if Game::is_just_pressed_ok
-        @boxes[0].clear_current_buffer()
+        @boxes[@current_index].clear_current_buffer()
+        if @boxes[@current_index].has_finished_to_write
+          @current_index += 1
+        end
       end
     else
-      @boxes[0].update()
+      @boxes[@current_index].update()
     end
   end
 
   def finished
-    return @boxes.size() == 0
+    return @boxes.size() == @current_index
   end
 
   def draw
-    if self.finished()
-      return
+    if not finished
+      @boxes[@current_index].draw
+      if @boxes[@current_index].is_right
+          @right_character.color = Omega::Color.new(0xff_ffffff)
+          @left_character.color  = Omega::Color.new(0xff_808080)
+      else
+          @right_character.color = Omega::Color.new(0xff_808080)
+          @left_character.color  = Omega::Color.new(0xff_ffffff)
+      end
+      @left_character.draw
+      @right_character.draw
     end
-    @boxes[0].draw()
   end
 
 end
