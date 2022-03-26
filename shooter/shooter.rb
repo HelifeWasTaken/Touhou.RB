@@ -127,7 +127,7 @@ class LineShooter < Shooter
     attr_accessor :level
 
     def initialize(isEnemy)
-        super(Idk.new(isEnemy), 1)
+        super(Idk.new(isEnemy, "CYAN"), 1)
         @pos = Omega::Vector2.new(0, 0);
         @level = 0;
         @tmp = []
@@ -137,16 +137,20 @@ class LineShooter < Shooter
     def shoot(x, y)
         if (@cd <= 0.0)
             @pos = Omega::Vector2.new(x, y);
-            for i in 0...25
+            @tmp << @bullet.copy_at(@pos.x, @pos.y);
+            @tmp_pos << Omega::Vector2.new(@pos.x, @pos.y);
+            for i in 0...24
                 @tmp << @bullet.copy_at(@pos.x, @pos.y);
-                @tmp_pos << Omega::Vector2.new(@pos.x - 25 * (i + 1));
+                @tmp_pos << Omega::Vector2.new(@pos.x - 25 * (i + 1), @pos.y);
+                @tmp << @bullet.copy_at(@pos.x, @pos.y);
+                @tmp_pos << Omega::Vector2.new(@pos.x + 25 * (i + 1), @pos.y);
             end
             @cd = @max_cd
         end
     end
 
     def aim(bullet)
-        bullet.angle = Math::atan2(0 - bullet.y, 250 - bullet.x) * 180 / Math::PI
+        bullet.angle = Math::atan2($dummy.x - bullet.y, $dummy.y - bullet.x) * 180 / Math::PI
     end
 
     def update()
@@ -162,7 +166,7 @@ class LineShooter < Shooter
             end
             @tmp[i].position.x += (@tmp_pos[i].x - @tmp[i].position.x) * 0.1
             self.aim(@tmp[i])
-            if (@tmp[i].position.x <= @tmp_pos[i].x + 1)
+            if (Omega.in_range(@tmp[i].position, @tmp_pos[i], 10))
                 @bullet.add_bullet(@tmp[i])
                 @tmp.delete_at(i)
                 @tmp_pos.delete_at(i)
@@ -183,7 +187,7 @@ class SplitShooter < Shooter
     attr_accessor :level
 
     def initialize(isEnemy)
-        super(SplitBoi.new(isEnemy), 1)
+        super(SplitBoi.new(isEnemy, Bullet::Variant::CYAN), 1)
         @pos = Omega::Vector2.new(0, 0);
         @level = 0;
         @tmp = []
@@ -192,7 +196,7 @@ class SplitShooter < Shooter
 
     def shoot(x, y)
         if (@cd <= 0.0)
-                @bullet.add_bullet_at_with_rot(x, y, -90)
+                @bullet.add_bullet_at_with_rot(x, y, -90, Bullet::Variant::CYAN)
             @cd = @max_cd
         end
     end
@@ -502,7 +506,7 @@ class BladeStorm < Shooter
     def rafale()
         if @rafale_cd <= 0.0 && @shot > 0
             for _ in 0...18
-                @bullet.add_bullet_at_with_rot(@pos.x, @pos.y, @angle)
+                @bullet.add_bullet_at_with_rot(@pos.x, @pos.y, @angle, Bullet::Variant::CYAN)
                 @angle += 20
             end
             @shot -= 1

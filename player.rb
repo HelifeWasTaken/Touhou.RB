@@ -6,7 +6,7 @@ class Player < Omega::SpriteSheet
         @health = 20;
         @position.x = 10
         @position.y = 10
-        @shooter = BladeStop.new(false)
+        @shooter = BladeShooter.new(false)
 
         set_origin(0.5)
     end
