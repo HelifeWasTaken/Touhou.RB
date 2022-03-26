@@ -42,11 +42,8 @@ class Game < Omega::RenderWindow
     def load
         $game = self
 
-        Game.load_parallax($c_planet, true)
         transition = Omega::FadeTransition.new(5, Omega::Color::copy(Omega::Color::BLACK)) { Omega.set_state(MenuState.new) }
         transition.alpha = 255
-
-        $player = Spaceship.new()
 
         Omega.launch_transition(transition)
     end
