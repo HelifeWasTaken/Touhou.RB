@@ -57,8 +57,8 @@ class Bullet < Omega::SpriteSheet
     end
 
     def on_window()
-        size
-        if (@position.x >= 0 and @position.x <= )
+        #size
+        #if (@position.x >= 0 and @position.x <= )
     end
 
     def copy_at(x, y)
