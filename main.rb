@@ -30,18 +30,15 @@ class Game < Omega::RenderWindow
 
     }
 
-    $event_messages = [
-    ]
-
-    $scale = 3.0
+    $scale = 1.0
     $camera = nil
 
-    $wave_manager = WaveManager.new()
     $player = nil
 
     def load
         $game = self
 
+        $camera = Omega::Camera.new($scale)
         transition = Omega::FadeTransition.new(5, Omega::Color::copy(Omega::Color::BLACK)) { Omega.set_state(MenuState.new) }
         transition.alpha = 255
 

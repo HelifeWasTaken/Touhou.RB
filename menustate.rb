@@ -1,4 +1,4 @@
-class PlayState < Omega::State
+class MenuState < Omega::State
 
     def load
         @timer = 0
@@ -8,7 +8,8 @@ class PlayState < Omega::State
     end
 
     def draw
-        @camera.draw do
+        $camera.draw do
+
         end
     end
 
