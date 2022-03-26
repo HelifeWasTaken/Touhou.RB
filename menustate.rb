@@ -1,4 +1,5 @@
 $cirno_talk = "./assets/talk/cirno_talk.png"
+$sakuya_talk = "./assets/talk/sakuya_talk.png"
 
 class MenuState < Omega::State
 
@@ -6,7 +7,7 @@ class MenuState < Omega::State
         @timer = 0
       @t = TextBoxHandler.new
       @t.set_left_character($cirno_talk)
-      @t.set_right_character($cirno_talk)
+      @t.set_right_character($sakuya_talk)
 
       @t.add_text("You dare opposing me", true)
       @t.add_text("I am the right character", false)
