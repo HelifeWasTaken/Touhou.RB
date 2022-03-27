@@ -1,5 +1,7 @@
 class BlinkingText < Omega::Text
 
+    attr_accessor :speed
+
   def initialize(text)
     super(text, $font)
 
@@ -62,9 +64,8 @@ class PlayState < Omega::State
         @timer += 1
         @text.update
 
-        puts "Game: " + Game.is_just_pressed_ok.to_s + " is_transition: " + Omega.is_transition?.to_s
+        # puts "Game: " + Game.is_just_pressed_ok.to_s + " is_transition: " + Omega.is_transition?.to_s
         if (Game.is_just_pressed_ok and not Omega.is_transition?)
-          puts "yo"
             transition = Omega::FadeTransition.new(10, Omega::Color::copy(Omega::Color::BLACK)) { Omega.set_state(MenuState.new) }
             Omega.launch_transition(transition)
         end
