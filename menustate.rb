@@ -1,3 +1,6 @@
+$cirno_talk = "./assets/talk/cirno_talk.png"
+$sakuya_talk = "./assets/talk/sakuya_talk.png"
+
 class MenuState < Omega::State
 
     def load
