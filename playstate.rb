@@ -4,6 +4,7 @@ class PlayState < Omega::State
     end
 
     def load_sprites()
+        @player = Player.new
     end
 
     def load_camera
@@ -14,6 +15,8 @@ class PlayState < Omega::State
     end
 
     def load
+        load_sprites()
+        load_camera()
         @timer = 0
     end
 
@@ -22,6 +25,7 @@ class PlayState < Omega::State
 
     def draw
         @camera.draw do
+            @player.draw
         end
     end
 

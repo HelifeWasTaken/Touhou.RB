@@ -30,15 +30,27 @@ class Game < Omega::RenderWindow
 
     }
 
-    $scale = 1.0
+    $enemy_bullets = []
+    $player_bullets = []
+
+    $scale = 1
     $camera = nil
 
-    $player = nil
+    $stop = false
+
+    $in_cinematic = false
+
+    $dummy = Omega::Vector2.new(500, 540)
+
+    $player = Player.new
+
+    $misc = []
 
     def load
         $game = self
 
-        $camera = Omega::Camera.new($scale)
+        $camera = Omega::Camera.new
+        $camera.scale = Omega::Vector2.new($scale, $scale)
         transition = Omega::FadeTransition.new(5, Omega::Color::copy(Omega::Color::BLACK)) { Omega.set_state(MenuState.new) }
         transition.alpha = 255
 

@@ -36,6 +36,10 @@ module Omega
         return Gosu.distance(vec1.x, vec1.y, vec2.x, vec2.y)
     end
 
+    def Omega.in_range(vec1, vec2, range)
+        return Gosu.distance(vec1.x, vec1.y, vec2.x, vec2.y) <= range
+    end
+
     # Classes
     require_relative "./window"
     require_relative "./color"
