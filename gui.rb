@@ -466,6 +466,7 @@ class ProgressBar < Widget
         @value = 0
         @color = 0xff_ffffff
         @offset = 1
+        @rect = Omega::Rectangle.new(0, 0, 0, 0)
     end
 
     def max(value)
@@ -491,12 +492,12 @@ class ProgressBar < Widget
     end
 
     def reload()
-        while @size.x.to_f > (@max.to_f * @offset)
-            if @max.to_f <= 0.0
-                break
-            end
-            @offset += 0.1
-        end
+        # while @size.x.to_f > (@max.to_f * @offset)
+        #     if @max.to_f <= 0.0
+        #         break
+        #     end
+        #     @offset += 0.1
+        # end
         super()
     end
 
@@ -507,9 +508,15 @@ class ProgressBar < Widget
     def on_input(); end
 
     def draw(x, y)
-        for tmp_x in 0...[@value * @offset, @max.to_f * @offset].min()
-            @image[3].draw(x + @pos.x + tmp_x * (@size.x / (@max.to_f * @offset)) * @tile_size * @scale.x, y + @pos.y * @scale.y, 0, @scale.x, @scale.y, @color)
-        end
+        # for tmp_x in 0...[@value * @offset, @max.to_f * @offset].min()
+        #     @image[3].draw(x + @pos.x + tmp_x * (@size.x / (@max.to_f * @offset)) * @tile_size * @scale.x, y + @pos.y * @scale.y, 0, @scale.x, @scale.y, @color)
+        # end
+        @rect.color = @color
+        @rect.x = x
+        @rect.y = y
+        @rect.width = @size.x * @tile_size * @scale.x * (@value.to_f / @max.to_f)
+        @rect.height = @tile_size * @scale.y
+        @rect.draw
         for tmp_x in 0...@size.x
             if tmp_x == 0
                 @image[0].draw(x + @pos.x + tmp_x * @tile_size * @scale.x, y + @pos.y * @scale.y, 0, @scale.x, @scale.y)

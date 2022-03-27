@@ -1,0 +1,14 @@
+/home/Raph/touhou/boss.rb:294:in `update': undefined method `call' for nil:NilClass (NoMethodError)
+	from /home/Raph/touhou/menustate.rb:19:in `update'
+	from /home/Raph/touhou/lib/window.rb:55:in `update'
+	from /home/Raph/.local/share/gem/ruby/gems/gosu-1.4.1/lib/gosu/patches.rb:64:in `tick'
+	from /home/Raph/touhou/lib/window.rb:132:in `run'
+	from main.rb:66:in `<main>'
+0
+0
+0
+0
+0
+0
+0
+0

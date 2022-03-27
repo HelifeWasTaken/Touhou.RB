@@ -41,7 +41,6 @@ class PlayState < Omega::State
       @bg.set_scale(2)
 
       @text = BlinkingText.new("Press Enter to Start the game")
-
     end
 
     def load_camera
@@ -56,7 +55,8 @@ class PlayState < Omega::State
 
         load_camera
         load_sprites
-
+        load_sprites()
+        load_camera()
         @timer = 0
     end
 

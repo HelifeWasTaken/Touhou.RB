@@ -30,10 +30,21 @@ class Game < Omega::RenderWindow
 
     }
 
-    $scale = 1.0
+    $enemy_bullets = []
+    $player_bullets = []
+
+    $scale = 1
     $camera = nil
 
-    $player = nil
+    $stop = false
+
+    $in_cinematic = false
+
+    $dummy = Omega::Vector2.new(500, 540)
+
+    $player = Player.new
+
+    $misc = []
 
     def load
         $game = self
