@@ -228,15 +228,31 @@ class TextBoxHandler
     if not finished
       @boxes[@current_index].draw
       if @boxes[@current_index].is_right
+        if not @right_character.nil?
           @right_character.color = Omega::Color.new(0xff_ffffff)
+        end
+        if not @left_character.nil?
           @left_character.color  = Omega::Color.new(0xff_808080)
+        end
       else
+        if not @left_character.nil?
           @right_character.color = Omega::Color.new(0xff_808080)
+        end
+        if not @right_character.nil?
           @left_character.color  = Omega::Color.new(0xff_ffffff)
+        end
       end
-      @left_character.draw
-      @right_character.draw
+        if not @left_character.nil?
+          @left_character.draw
+        end
+        if not @right_character.nil?
+          @right_character.draw
+        end
     end
   end
+
+  # def clear
+  #   self = TextBoxHandler.new
+  # end
 
 end

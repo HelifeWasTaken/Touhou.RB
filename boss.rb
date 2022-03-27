@@ -12,7 +12,7 @@ end
 
 class Boss < TouhouCharacter
 
-    attr_accessor :health_max, :health, :phase
+    attr_accessor :health_max, :health, :phase, :dead, :timer
 
     def initialize(sprite, max_frames, scale, size, health, phases, env)
         super(sprite, max_frames, scale, size, size)
@@ -31,6 +31,7 @@ class Boss < TouhouCharacter
         @sleep = 0
         @star = Star.new()
         @timer = 0
+        @finished = false
     end
 
     def draw
@@ -83,18 +84,7 @@ class Boss < TouhouCharacter
             uncast()
         end
         if @dead
-            self.dead_anim()
             return
-        end
-        if self.is_dead?
-            clear_bullet()
-            if self.has_more_phases?
-                @phase += 1
-                @health = @health_max[@phase]
-            else
-                @dead = true
-                @timer = 10
-            end
         end
         if @sleep >= 0.0
             @sleep -= 1.0 / 60.0
@@ -117,12 +107,19 @@ class Boss < TouhouCharacter
         end
     end
 
+    def phase_up
+        @phase += 1
+        @health = @health_max[@phase]
+    end
+
     def dead_anim
+        puts @timer
         if @timer >= 0.0
             @timer -= 1.0 / 60.0
         end
         if @timer <= 0.0
             $in_cinematic = false
+            @finished = true
         end
         @cast_color = Omega::Color::RED
         @behaviours[@phase][@type].reset
@@ -136,6 +133,10 @@ class Boss < TouhouCharacter
             $player.position.x += (500 - $player.position.x) * 0.05
             $player.position.y += (800 - $player.position.y) * 0.05
         end
+    end
+
+    def finished?
+        return @finished
     end
 
     def damage(dmg)
@@ -226,6 +227,117 @@ class Cirno < Boss
             if @sleep <= 0.0
                 @cast = false
                 @sleep = @behaviours[@phase][@type].sleep
+            end
+        end
+    end
+
+end
+
+class BossManager
+
+    def initialize()
+
+        @text_box = TextBoxHandler.new()
+        @events = [
+            [
+                lambda {
+                    @text_box = TextBoxHandler.new()
+                    @text_box.set_left_character($cirno_talk)
+                    @text_box.set_right_character($sakuya_talk)
+                    @text_box.add_text("I'm gony kick your assets", true)
+                    @text_box.add_text("Your trigered my trap card", false)
+                    @text_box.add_text("And i negate your effect with Ash Blossom", true)
+                    @text_box.add_text("NOoooooooooooooo", false)
+                    @text_box.start()
+                },
+                lambda {
+                    @text_box = TextBoxHandler.new()
+                    @text_box.set_left_character($cirno_talk)
+                    @text_box.set_right_character($sakuya_talk)
+                    @text_box.add_text("This is the last time we talk", true)
+                    @text_box.add_text("Your trigered my trap card", false)
+                    @text_box.add_text("And i negate your effect with Ash Blossom", true)
+                    @text_box.add_text("NOoooooooooooooo", false)
+                    @text_box.start()
+                }
+            ]
+        ]
+        @bosses = [
+            Cirno.new()
+        ]
+        @actual_boss = 0
+        @in_last_text = false
+        @bar = ProgressBar.new().max(@bosses[@actual_boss].health_max[@bosses[@actual_boss].phase]).value(5).color(0xff_fafafa).tile_size(16).display("assets/textures/gui/bar.png").size(60)
+    end
+
+    def finished?
+        return @actual_boss >= @bosses.size
+    end
+
+    def update_current_boss
+        if @bosses[@actual_boss].finished?
+            if @in_last_text
+                if @text_box.finished
+                    @actual_boss += 1
+                    @in_last_text = 0
+                end
+                return
+            end
+            @events[@actual_boss][-1].call
+            @in_last_text = true
+            return
+        else
+            if not @text_box.finished
+                $in_cinematic = true
+                return
+            end
+            $in_cinematic = false
+            @bosses[@actual_boss].update
+            if @bosses[@actual_boss].dead
+                @bosses[@actual_boss].dead_anim()
+                return
+            end
+            if @bosses[@actual_boss].is_dead?
+                @bosses[@actual_boss].clear_bullet()
+                if @bosses[@actual_boss].has_more_phases?
+                    @events[@actual_boss][@bosses[@actual_boss].phase].call
+                    @bosses[@actual_boss].phase_up
+                else
+                    @bosses[@actual_boss].dead = true
+                    @bosses[@actual_boss].timer = 1
+                end
+            end
+        end
+    end
+
+    def update()
+        if finished?
+            return
+        end
+        @text_box.update
+        @bar.value(@bosses[@actual_boss].health)
+        @bar.max(@bosses[@actual_boss].health_max[@bosses[@actual_boss].phase])
+        update_current_boss()
+    end
+
+    def draw()
+        if finished?
+            return
+        end
+        if not @bosses[@actual_boss].finished?
+            @bosses[@actual_boss].draw
+        end
+        @bar.draw(Omega.width / 2 - 30 * 16, 16)
+        @text_box.draw
+    end
+
+    def damage()
+        if finished?
+            return
+        end
+        for bullet in $player_bullets
+            if bullet.rect.collides?(@bosses[@actual_boss].box)
+                @bosses[@actual_boss].damage(bullet.damage)
             end
         end
     end
@@ -328,6 +440,12 @@ class Cirno1 < Behaviour
         @bullet.add_bullet_at_with_rot(@entity.position.x, @entity.position.y, angle, Bullet::Variant::CYAN)
         @bullet.add_bullet_at_with_rot(@entity.position.x, @entity.position.y, angle - 20, Bullet::Variant::CYAN)
         @bullet.add_bullet_at_with_rot(@entity.position.x, @entity.position.y, angle - 40, Bullet::Variant::CYAN)
+        if @entity.phase == 1
+            @bullet.add_bullet_at_with_rot(@entity.position.x, @entity.position.y, angle + 30, Bullet::Variant::CYAN)
+            @bullet.add_bullet_at_with_rot(@entity.position.x, @entity.position.y, angle - 30, Bullet::Variant::CYAN)
+            @bullet.add_bullet_at_with_rot(@entity.position.x, @entity.position.y, angle + 10, Bullet::Variant::CYAN)
+            @bullet.add_bullet_at_with_rot(@entity.position.x, @entity.position.y, angle - 10, Bullet::Variant::CYAN)
+        end
         @ended = true
     end
 
@@ -503,7 +621,6 @@ class Cirno4 < Behaviour
                 @tmp[i].angle = @cycle + 90
                 @cycle += 45
             end
-            puts @timer
             @cycle += @speed
             @speed += 0.1
             @delta += 0.5
