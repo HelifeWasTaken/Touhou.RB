@@ -49,9 +49,8 @@ class Game < Omega::RenderWindow
     def load
         $game = self
 
-        $camera = Omega::Camera.new
-        $camera.scale = Omega::Vector2.new($scale, $scale)
-        transition = Omega::FadeTransition.new(5, Omega::Color::copy(Omega::Color::BLACK)) { Omega.set_state(MenuState.new) }
+        $camera = Omega::Camera.new($scale)
+        transition = Omega::FadeTransition.new(5, Omega::Color::copy(Omega::Color::BLACK)) { Omega.set_state(PlayState.new) }
         transition.alpha = 255
 
         Omega.launch_transition(transition)
