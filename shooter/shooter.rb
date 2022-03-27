@@ -76,7 +76,7 @@ class PeasShooter < Shooter
     attr_accessor :level
 
     def initialize(isEnemy)
-        super(Idk.new(isEnemy), 0.05)
+        super(Knife.new(isEnemy), 0.05)
         @level = 0;
     end
 
@@ -127,7 +127,7 @@ class LineShooter < Shooter
     attr_accessor :level
 
     def initialize(isEnemy)
-        super(Idk.new(isEnemy, "CYAN"), 1)
+        super(Idk.new(isEnemy, Bullet::Variant::CYAN), 1)
         @pos = Omega::Vector2.new(0, 0);
         @level = 0;
         @tmp = []
@@ -150,7 +150,7 @@ class LineShooter < Shooter
     end
 
     def aim(bullet)
-        bullet.angle = Math::atan2($dummy.x - bullet.y, $dummy.y - bullet.x) * 180 / Math::PI
+        bullet.angle = Math::atan2($player.position.y - bullet.y, $player.position.x - bullet.x) * 180 / Math::PI
     end
 
     def update()
@@ -196,7 +196,7 @@ class SplitShooter < Shooter
 
     def shoot(x, y)
         if (@cd <= 0.0)
-                @bullet.add_bullet_at_with_rot(x, y, -90, Bullet::Variant::CYAN)
+                @bullet.add_bullet_at_with_rot(x, y, 90, Bullet::Variant::CYAN)
             @cd = @max_cd
         end
     end
@@ -472,7 +472,7 @@ class BladeStorm < Shooter
     attr_accessor :level
 
     def initialize(isEnemy)
-        super(StormBlade.new(isEnemy), 1)
+        super(StormBlade.new(isEnemy, Bullet::Variant::CYAN), 10)
         @pos = Omega::Vector2.new(0, 0);
         @level = 0;
         @angle = 0
@@ -597,7 +597,7 @@ class BladeStop < Shooter
     attr_accessor :level
 
     def initialize(isEnemy)
-        super(Blade.new(isEnemy, "CYAN"), 1)
+        super(Blade.new(isEnemy, Bullet::Variant::CYAN), 1)
         @pos = Omega::Vector2.new(0, 0);
         @level = 0;
         @tmp_pos = []
@@ -613,20 +613,20 @@ class BladeStop < Shooter
 
     def shoot(x, y)
         if (@cd <= 0.0)
-            @pos = $dummy;
+            @pos = $player.position;
             @angle = rand(-120..-70)
             @delta = 0
             for i in 0...@shot_max
                 @tmp_pos << Omega::Vector2.new(@pos.x + (i + 10) * 25 * Math::cos((@angle - 50 - @delta * 5) * Math::PI / 180), @pos.y + (i + 10) * 25 * Math::sin((@angle - 50 - @delta * 5) * Math::PI / 180))
-                @tmp_angle << aim(@tmp_pos[-1], $dummy)
+                @tmp_angle << aim(@tmp_pos[-1], $player.position)
                 @tmp_pos << Omega::Vector2.new(@pos.x + (i + 10) * 25 * Math::cos(@angle * Math::PI / 180), @pos.y + (i + 10) * 25 * Math::sin(@angle * Math::PI / 180))
-                @tmp_angle << aim(@tmp_pos[-1], $dummy)
+                @tmp_angle << aim(@tmp_pos[-1], $player.position)
                 @tmp_pos << Omega::Vector2.new(@pos.x + (i + 10) * 25 * Math::cos((@angle + 50 + @delta * 5) * Math::PI / 180), @pos.y + (i + 10) * 25 * Math::sin((@angle + 50 + @delta * 5) * Math::PI / 180))
-                @tmp_angle << aim(@tmp_pos[-1], $dummy)
+                @tmp_angle << aim(@tmp_pos[-1], $player.position)
                 @tmp_pos << Omega::Vector2.new(@pos.x + (i + 10) * 25 * Math::cos((@angle - 100 - @delta * 5) * Math::PI / 180), @pos.y + (i + 10) * 25 * Math::sin((@angle - 100 - @delta * 5) * Math::PI / 180))
-                @tmp_angle << aim(@tmp_pos[-1], $dummy)
+                @tmp_angle << aim(@tmp_pos[-1], $player.position)
                 @tmp_pos << Omega::Vector2.new(@pos.x + (i + 10) * 25 * Math::cos((@angle + 100 + @delta * 5) * Math::PI / 180), @pos.y + (i + 10) * 25 * Math::sin((@angle + 100 + @delta * 5) * Math::PI / 180))
-                @tmp_angle << aim(@tmp_pos[-1], $dummy)
+                @tmp_angle << aim(@tmp_pos[-1], $player.position)
                 @delta += 1
             end
             @shot = @shot_max
@@ -636,7 +636,7 @@ class BladeStop < Shooter
     end
 
     def aim(origin, at)
-        return Math::atan2(at.x - origin.y, at.y - origin.x) * 180 / Math::PI
+        return Math::atan2(at.y - origin.y, at.x - origin.x) * 180 / Math::PI
     end
 
     def update()
@@ -653,7 +653,7 @@ class BladeStop < Shooter
             @tmp_pos = []
             @tmp_angle = []
             for b in @tmp
-                b.add_bullet(b, "CYAN")
+                b.add_bullet(b, Bullet::Variant::CYAN)
             end
             @tmp = []
         end
@@ -666,7 +666,7 @@ class BladeStop < Shooter
                 for j in 0...3
                     @tmp << @bullet.copy_at(@tmp_pos[@shot * 5 + i].x, @tmp_pos[@shot * 5 + i].y)
                     @tmp[-1].angle = @tmp_angle[@shot * 5 + i] + (-30 + 30 * j)
-                    @tmp[-1].set_variant("RED")
+                    @tmp[-1].set_variant(Bullet::Variant::RED)
                 end
             end
             @rafale_cd = 0.05

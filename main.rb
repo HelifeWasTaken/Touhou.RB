@@ -38,9 +38,13 @@ class Game < Omega::RenderWindow
 
     $stop = false
 
+    $in_cinematic = false
+
     $dummy = Omega::Vector2.new(500, 540)
 
-    $player = nil
+    $player = Player.new
+
+    $misc = []
 
     def load
         $game = self

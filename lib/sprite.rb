@@ -103,7 +103,6 @@ module Omega
         rescue
             nil
         end
-        
         def subimage(x, y, width, height)
             return @image.subimage(x, y, width, height)
         end
