@@ -24,7 +24,6 @@ class TextBox
 
   end
 
-
   def set_y(y)
     @box.y = y
     @BUFFER_STARTY = y + 40
@@ -73,6 +72,9 @@ class TextBox
 
 end
 
+$_BOX_OFFSET_CHARA = 200
+$_BOX_SPEED_CHARA = 15
+
 class TextBoxHandler
 
   def initialize
@@ -98,19 +100,30 @@ class TextBoxHandler
   def set_left_character(chara)
     @left_character = Omega::Sprite.new(chara)
     @left_character.y = Omega.height / 2 - @left_character.height / 2 - 60
+    @left_character.x = -@left_character.width
   end
 
   def set_right_character(chara)
     @right_character = Omega::Sprite.new(chara)
     @right_character.y = Omega.height / 2 - @right_character.height / 2 - 60
+    @right_character.x = Omega.width
   end
 
   def set_left_chara_should_go
-      dest = 30
+      dest = 20
+      if not is_right_turn
+        dest += $_BOX_OFFSET_CHARA
+      end
       if @left_character.x > dest
-        @left_character.x = dest
+        @left_character.x -= $_BOX_SPEED_CHARA
+        if @left_character.x < dest
+          @left_character.x = dest
+        end
       elsif @left_character.x < dest
-        @left_character.x += 20
+        @left_character.x += $_BOX_SPEED_CHARA
+        if @left_character.x > dest
+          @left_character.x = dest
+        end
       else
         return true
       end
@@ -119,10 +132,19 @@ class TextBoxHandler
 
   def set_right_chara_should_go
     dest = Omega.width - @right_character.width - 30
+    if is_right_turn
+      dest -= $_BOX_OFFSET_CHARA
+    end
     if @right_character.x > dest
-      @right_character.x -= 20
+      @right_character.x -= $_BOX_SPEED_CHARA
+      if @right_character.x < dest
+        @right_character.x = dest
+      end
     elsif @right_character.x < dest
-      @right_character.x = dest
+      @right_character.x += $_BOX_SPEED_CHARA
+      if @right_character.x > dest
+        @right_character.x = dest
+      end
     else
       return true
     end
@@ -174,8 +196,9 @@ class TextBoxHandler
     if self.finished()
       return
     end
-    set_left_chara_should_go
-    set_right_chara_should_go
+    if set_left_chara_should_go && set_right_chara_should_go == false
+      return
+    end
     if @boxes[@current_index].finished()
       self.play_current_sound()
       @current_index += 1
@@ -191,6 +214,10 @@ class TextBoxHandler
     else
       @boxes[@current_index].update()
     end
+  end
+
+  def is_right_turn
+    return @boxes[@current_index].is_right
   end
 
   def finished
