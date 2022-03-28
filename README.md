@@ -1,5 +1,7 @@
-# Epitech Game Jam - Spaceshooter
-Spaceshooter for the Epitech Game Jam (la Réunion) 2022
+# Epitech Game Jam - TouhouBB
+A Touhou fangame for the Epitech Game Jam 2022
+
+GameJam Theme: Blue
 
 ## Tools used
 - Ruby
@@ -9,4 +11,3 @@ Spaceshooter for the Epitech Game Jam (la Réunion) 2022
 ## Contributors
 - Helife (aka Mattis Dalleau)
 - Swordeus (aka Raphaël Turpin)
-- D3nX (aka Denis Maillot)
