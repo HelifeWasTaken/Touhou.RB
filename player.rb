@@ -76,8 +76,8 @@ class Player < TouhouCharacter
     def initialize
         super("assets/textures/character/player.png", 6, 1.5, 48, 48)
 
-        @max_health = 8;
-        @health = 8;
+        @max_health = 80;
+        @health = @max_health;
 
         @position.x = 10
         @position.y = 10

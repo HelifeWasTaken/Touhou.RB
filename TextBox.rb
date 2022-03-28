@@ -130,7 +130,7 @@ class TextBoxHandler
       else
         return true
       end
-    return false
+    return true
   end
 
   def set_right_chara_should_go
@@ -151,7 +151,7 @@ class TextBoxHandler
     else
       return true
     end
-    return false
+    return true
   end
 
   def add_text(full_text, is_right)
@@ -231,26 +231,26 @@ class TextBoxHandler
     if not finished
       @boxes[@current_index].draw
       if @boxes[@current_index].is_right
-        if not @right_character.nil?
-          @right_character.color = Omega::Color.new(0xff_ffffff)
-        end
-        if not @left_character.nil?
-          @left_character.color  = Omega::Color.new(0xff_808080)
-        end
+          if not @right_character.nil?
+              @right_character.color = Omega::Color.new(0xff_ffffff)
+          end
+          if not @left_character.nil?
+              @left_character.color  = Omega::Color.new(0xff_808080)
+          end
       else
-        if not @right_character.nil?
-          @right_character.color = Omega::Color.new(0xff_808080)
-        end
-        if not @left_character.nil?
-          @left_character.color  = Omega::Color.new(0xff_ffffff)
-        end
+          if not @right_character.nil?
+              @right_character.color = Omega::Color.new(0xff_808080)
+          end
+          if not @left_character.nil?
+              @left_character.color  = Omega::Color.new(0xff_ffffff)
+          end
       end
-        if not @left_character.nil?
+      if @left_character != nil
           @left_character.draw
-        end
-        if not @right_character.nil?
+      end
+      if @right_character != nil
           @right_character.draw
-        end
+      end
     end
   end
 

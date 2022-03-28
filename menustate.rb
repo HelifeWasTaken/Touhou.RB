@@ -1,5 +1,6 @@
 $cirno_talk = "./assets/talk/cirno_talk.png"
 $sakuya_talk = "./assets/talk/sakuya_talk.png"
+$shion_talk = "./assets/talk/talk_shion.png"
 
 class MenuState < Omega::State
 
@@ -48,6 +49,7 @@ class MenuState < Omega::State
             lambda {
                 $text_box = TextBoxHandler.new()
                 $text_box.set_right_character($sakuya_talk)
+                $text_box.set_left_character($shion_talk)
                 $text_box.add_text("I didn't expect you to be that strong", true)
                 $text_box.add_text("...", false)
                 $text_box.add_text("Let's see if you can handle this!", true)
@@ -56,6 +58,7 @@ class MenuState < Omega::State
             lambda {
                 $text_box = TextBoxHandler.new()
                 $text_box.set_right_character($sakuya_talk)
+                $text_box.set_left_character($shion_talk)
                 $text_box.add_text("Still alive I see", true)
                 $text_box.add_text("...", false)
                 $text_box.add_text("Then let's speed up th pace, shall we?", true)
@@ -66,6 +69,7 @@ class MenuState < Omega::State
             lambda {
                 $text_box = TextBoxHandler.new()
                 $text_box.set_right_character($sakuya_talk)
+                $text_box.set_left_character($shion_talk)
                 $text_box.add_text("I guess i overestimated your strength...", true)
                 $text_box.add_text("...", false)
                 $text_box.add_text("I will have my revenge someday...", true)
@@ -76,6 +80,7 @@ class MenuState < Omega::State
         lambda {
             $text_box = TextBoxHandler.new()
                 $text_box.set_right_character($sakuya_talk)
+                $text_box.set_left_character($shion_talk)
                 $text_box.add_text("*You feel a strong presence*", false)
                 $text_box.add_text("You seem pretty strong, little one", true)
                 $text_box.add_text("Let's see how far can you go", true)
