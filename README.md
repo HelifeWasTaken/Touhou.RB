@@ -1,4 +1,4 @@
-# Epitech Game Jam - TouhouBB
+# Epitech Game Jam - Touhou.RB
 A Touhou fangame for the Epitech Game Jam 2022
 
 GameJam Theme: Blue
