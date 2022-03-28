@@ -514,7 +514,7 @@ class ProgressBar < Widget
         @rect.color = @color
         @rect.x = x
         @rect.y = y
-        @rect.width = @size.x * @tile_size * @scale.x * (@value.to_f / @max.to_f)
+        @rect.width = [@size.x * @tile_size * @scale.x * (@value.to_f / @max.to_f), 0].max
         @rect.height = @tile_size * @scale.y
         @rect.draw
         for tmp_x in 0...@size.x

@@ -71,11 +71,13 @@ end
 
 class Player < TouhouCharacter
 
+    attr_accessor :health, :max_health
+
     def initialize
         super("assets/textures/character/player.png", 6, 1.5, 48, 48)
 
-        @max_health = 20;
-        @health = 20;
+        @max_health = 8;
+        @health = 8;
 
         @position.x = 10
         @position.y = 10
@@ -84,16 +86,24 @@ class Player < TouhouCharacter
 
     def controller
         if Omega::pressed(Gosu::KB_W)
+          if not @position.y <= 8
             @position.y -= 5
+          end
         end
         if Omega::pressed(Gosu::KB_A)
+          if not @position.x <= 8
             @position.x -= 5
+          end
         end
         if Omega::pressed(Gosu::KB_S)
+          if not @position.y >= Omega.height - 8
             @position.y += 5
+          end
         end
         if Omega::pressed(Gosu::KB_D)
+          if not @position.x >= Omega.width - 8
             @position.x += 5
+          end
         end
         if Omega::pressed(Gosu::KB_SPACE)
             @shooter.shoot(@position.x, @position.y)
@@ -124,4 +134,9 @@ class Player < TouhouCharacter
     def damage
       @health -= 1
     end
+
+    def is_dead?
+      return @health <= 0.0
+    end
+
 end

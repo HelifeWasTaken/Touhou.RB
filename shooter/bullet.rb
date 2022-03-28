@@ -52,6 +52,9 @@ class Bullet < Omega::Sprite
             die
         end
         @lifetime -= 1
+        if @angle.nil?
+            return;
+        end
         self.x += @speed * Math::cos(Omega::to_rad(@angle))
         self.y += @speed * Math::sin(Omega::to_rad(@angle))
     end
@@ -62,6 +65,9 @@ class Bullet < Omega::Sprite
 
     def draw()
         if @variants[@variant].nil?
+            return
+        end
+        if @angle.nil?
             return
         end
         @variants[@variant].draw_rot((@flip.x) ? @position.x + @width * @scale.x - @width*2 * @scale.x * @origin.x : @position.x,
@@ -401,4 +407,49 @@ class Circle < Bullet
             p.draw
         end
     end
+end
+
+class SpellBullet < Bullet
+
+    attr_accessor :bullet_angle
+
+    def initialize(isEnemy, variant=Variant::BLUE)
+        super("assets/textures/misc/second_spell.png", 64, variant, 15, isEnemy, 1000)
+        @rect = Omega::Rectangle.new(0, 0, 0, 0)
+        @bullet = Pellet.new(true)
+        @damage = 1
+        @top_speed = 0
+        @cd = 0
+        set_scale(2)
+    end
+
+    def go_f4st()
+        @speed += (@top_speed - @speed) * 0.05
+        @rect.x = @position.x - @rect.width / 2
+        @rect.y = @position.y - @rect.height / 2
+        @angle += 4
+        if @lifetime < 0 or not out_of_bounds
+            die
+        end
+        @lifetime -= 1
+        self.x += @speed * Math::cos(Omega::to_rad(@bullet_angle))
+        self.y += @speed * Math::sin(Omega::to_rad(@bullet_angle))
+        if @cd > 0.0
+            @cd -= 1.0 / 60.0
+        else
+            for i in 0...18
+                @bullet.add_bullet_at_with_rot(self.x, self.y, i * 20 + @angle)
+            end
+            @cd = 0.2
+        end
+    end
+
+    def die()
+        super()
+    end
+
+    def on_hit()
+        super()
+    end
+
 end

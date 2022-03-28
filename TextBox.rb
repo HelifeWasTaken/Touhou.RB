@@ -72,7 +72,7 @@ class TextBox
 
 end
 
-$_BOX_OFFSET_CHARA = 200
+$_BOX_OFFSET_CHARA = 50
 $_BOX_SPEED_CHARA = 15
 
 class TextBoxHandler
@@ -113,6 +113,9 @@ class TextBoxHandler
       dest = 20
       if not is_right_turn
         dest += $_BOX_OFFSET_CHARA
+      end
+      if @left_character.nil?
+        return
       end
       if @left_character.x > dest
         @left_character.x -= $_BOX_SPEED_CHARA
@@ -235,10 +238,10 @@ class TextBoxHandler
           @left_character.color  = Omega::Color.new(0xff_808080)
         end
       else
-        if not @left_character.nil?
+        if not @right_character.nil?
           @right_character.color = Omega::Color.new(0xff_808080)
         end
-        if not @right_character.nil?
+        if not @left_character.nil?
           @left_character.color  = Omega::Color.new(0xff_ffffff)
         end
       end

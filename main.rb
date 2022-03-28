@@ -16,6 +16,16 @@ class Game < Omega::RenderWindow
     $font = Gosu::Font.new(35, name: "assets/SuperLegendBoy.ttf")
 
     $musics = {
+        "Main_menu" => Gosu::Song.new("assets/musics/pied_menu.ogg"),
+        "Simple_dialog" => Gosu::Song.new("assets/musics/simple_dialog.ogg"),
+        "Confrontation" => Gosu::Song.new("assets/musics/confrontation.ogg"),
+        "GameOver" => Gosu::Song.new("assets/musics/game_over.ogg"),
+        "Credits" => Gosu::Song.new("assets/musics/credits.ogg"),
+        "Cirno_phase1" => Gosu::Song.new("assets/musics/cirno1.ogg"),
+        "Cirno_phase2" => Gosu::Song.new("assets/musics/cirno2.ogg"),
+        "Faith" => Gosu::Song.new("assets/musics/faith.ogg"),
+        "Death" => Gosu::Song.new("assets/musics/death.ogg"),
+        "Last_run" => Gosu::Song.new("assets/musics/last_run.ogg")
     }
 
     $sounds = {
@@ -34,7 +44,8 @@ class Game < Omega::RenderWindow
     $player_bullets = []
 
     $scale = 1
-    $camera = nil
+    $camera = Omega::Camera.new()
+    $camera.scale = Omega::Vector2.new($scale, $scale)
 
     $stop = false
 
@@ -45,6 +56,10 @@ class Game < Omega::RenderWindow
     $player = Player.new
 
     $misc = []
+
+    $actual_boss = 0
+
+    $text_box = TextBoxHandler.new()
 
     def load
         $game = self
