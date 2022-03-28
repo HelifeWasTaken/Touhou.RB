@@ -82,6 +82,7 @@ class Player < TouhouCharacter
         @position.x = 10
         @position.y = 10
         @shooter = PeasShooter.new(false)
+        @shooter.level = 2
     end
 
     def controller

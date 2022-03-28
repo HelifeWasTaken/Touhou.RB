@@ -197,7 +197,7 @@ end
 class Cirno < Boss
 
     def initialize()
-        super("assets/textures/character/cirno.png", 2, 1.5, 64, [1, 1], 2, IceBiome.new())
+        super("assets/textures/character/cirno.png", 2, 1.5, 64, [100, 150], 2, IceBiome.new())
         @sleep = 0
         @phase = 0
         @type = 0
@@ -830,7 +830,7 @@ end
 class Whiterock < Boss
 
     def initialize()
-        super("assets/textures/character/whiterock.png", 5, 1.5, 64, [1, 1, 1], 3, IceBiome.new())
+        super("assets/textures/character/whiterock.png", 5, 1.5, 64, [300, 450, 600], 3, IceBiome.new())
         @sleep = 0
         @phase = 0
         @type = 0
