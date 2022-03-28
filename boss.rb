@@ -1,135 +1,134 @@
-require_relative "player.rb"
+  require_relative "player.rb"
 
-module Spell
-    RED = Omega::Color::RED
-    MAGENTA = Omega::Color::FUCHSIA
-    BLUE = Omega::Color::BLUE
-    CYAN = Omega::Color::CYAN
-    GREEN = Omega::Color::GREEN
-    YELLOW = Omega::Color::YELLOW
-    WHITE = Omega::Color::WHITE
-end
+  module Spell
+      RED = Omega::Color::RED
+      MAGENTA = Omega::Color::FUCHSIA
+      BLUE = Omega::Color::BLUE
+      CYAN = Omega::Color::CYAN
+      GREEN = Omega::Color::GREEN
+      YELLOW = Omega::Color::YELLOW
+      WHITE = Omega::Color::WHITE
+  end
 
-class Boss < TouhouCharacter
+  class Boss < TouhouCharacter
 
-    attr_accessor :health_max, :health, :phase, :dead, :timer
+      attr_accessor :health_max, :health, :phase, :dead, :timer
 
-    def initialize(sprite, max_frames, scale, size, health, phases, env)
-        super(sprite, max_frames, scale, size, size)
-        @phase = 0
-        @health_max = health
-        @health = @health_max[0]
-        @main = Omega::Sprite.new("assets/textures/misc/main_spell.png")
-        @main.set_origin(0.5)
-        @second = Omega::Sprite.new("assets/textures/misc/second_spell.png")
-        @cast = false
-        @cast_color = Omega::Color::WHITE
-        @env = env
-        @dead = false
-        @behaviours = []
-        @probs = []
-        @sleep = 0
-        @star = Star.new()
-        @timer = 0
-        @finished = false
+      def initialize(sprite, max_frames, scale, size, health, phases, env)
+          super(sprite, max_frames, scale, size, size)
+          @phase = 0
+          @health_max = health
+          @health = @health_max[0]
+          @main = Omega::Sprite.new("assets/textures/misc/main_spell.png")
+          @main.set_origin(0.5)
+          @second = Omega::Sprite.new("assets/textures/misc/second_spell.png")
+          @cast = false
+          @cast_color = Omega::Color::WHITE
+          @env = env
+          @dead = false
+          @behaviours = []
+          @probs = []
+          @sleep = 0
+          @star = Star.new()
+          @timer = 0
+          @finished = false
 
-        @main.scale = Omega::Vector2.new(10, 10)
-        @main.alpha = 0
-    end
+          @main.scale = Omega::Vector2.new(10, 10)
+          @main.alpha = 0
+      end
 
-    def draw
-        @env.draw
-        @main.draw
-        super
-    end
+      def draw
+          @env.draw
+          @main.draw
+          super
+      end
 
-    def cast
-        @main.color = @cast_color
-        @main.alpha += (255 - @main.alpha) * 0.1
-        @main.scale.x += (1 - @main.scale.x) * 0.1
-        @main.scale.y += (1 - @main.scale.y) * 0.1
-    end
+      def cast
+          @main.color = @cast_color
+          @main.alpha += (255 - @main.alpha) * 0.1
+          @main.scale.x += (1 - @main.scale.x) * 0.1
+          @main.scale.y += (1 - @main.scale.y) * 0.1
+      end
 
-    def uncast
-        @main.alpha += (0 - @main.alpha) * 0.1
-        @main.scale.x += (10 - @main.scale.x) * 0.1
-        @main.scale.y += (10 - @main.scale.y) * 0.1
-    end
+      def uncast
+          @main.alpha += (0 - @main.alpha) * 0.1
+          @main.scale.x += (10 - @main.scale.x) * 0.1
+          @main.scale.y += (10 - @main.scale.y) * 0.1
+      end
 
-    def choose
-        sum = @probs[@phase].sum
-        tmp = 0.0
-        ran = rand(0.0..sum)
+      def choose
+          sum = @probs[@phase].sum
+          tmp = 0.0
+          ran = rand(0.0..sum)
 
-        for i in 0...@probs[@phase].size
-            tmp += @probs[@phase][i]
-            if ran <= tmp
-                return i
-            end
-        end
-    end
+          for i in 0...@probs[@phase].size
+              tmp += @probs[@phase][i]
+              if ran <= tmp
+                  return i
+              end
+          end
+      end
 
-    def update
-        if not @dead and not $stop
-            @env.update
-        end
-        if @dead
-            @main.angle += 10
-        else
-            @main.angle += 5
-        end
-        @main.position.x = self.position.x
-        @main.position.y = self.position.y
-        @main.color = @cast_color
-        if @cast
-            cast()
-        else
-            uncast()
-        end
-        if @dead
-            return
-        end
-        # for b in @behaviours[@phase]
-        #     b.cooldown
-        # end
-        # if @behaviours[@phase][@type].has_end?
-        #     if @behaviours[@phase][@type].can_init?
-        #         @behaviours[@phase][@type].reset
-        #     end
-        #     @type = rand(0...@behaviours[@phase].size)
-        #     if @behaviours[@phase][@type].can_init?
-        #         @behaviours[@phase][@type].reset
-        #     end
-        # end
-        if @sleep >= 0.0
-            @sleep -= 1.0 / 60.0
-            if @sleep <= 0.0
-                @behaviours[@phase][@type].reset
-                @type = self.choose()
-                @behaviours[@phase][@type].reset
-            end
-        end
-        self.behaviour
-        super
-    end
+      def update
+          if not @dead and not $stop
+              @env.update
+          end
+          if @dead
+              @main.angle += 10
+          else
+              @main.angle += 5
+          end
+          @main.position.x = self.position.x
+          @main.position.y = self.position.y
+          @main.color = @cast_color
+          if @cast
+              cast()
+          else
+              uncast()
+          end
+          if @dead
+              return
+          end
+          # for b in @behaviours[@phase]
+          #     b.cooldown
+          # end
+          # if @behaviours[@phase][@type].has_end?
+          #     if @behaviours[@phase][@type].can_init?
+          #         @behaviours[@phase][@type].reset
+          #     end
+          #     @type = rand(0...@behaviours[@phase].size)
+          #     if @behaviours[@phase][@type].can_init?
+          #         @behaviours[@phase][@type].reset
+          #     end
+          # end
+          if @sleep >= 0.0
+              @sleep -= 1.0 / 60.0
+              if @sleep <= 0.0
+                  @behaviours[@phase][@type].reset
+                  @type = self.choose()
+                  @behaviours[@phase][@type].reset
+              end
+          end
+          self.behaviour
+          super
+      end
 
-    def clear_bullet
-        while $enemy_bullets.size > 0
-            $enemy_bullets[0].clear
-        end
-        while $player_bullets.size > 0
-            $player_bullets[0].clear
-        end
-    end
+      def clear_bullet
+          while $enemy_bullets.size > 0
+              $enemy_bullets[0].clear
+          end
+          while $player_bullets.size > 0
+              $player_bullets[0].clear
+          end
+      end
 
-    def phase_up
-        @phase += 1
-        @health = @health_max[@phase]
-        @env.level_up
-    end
+      def phase_up
+          @phase += 1
+          @health = @health_max[@phase]
+          @env.level_up
+      end
 
-    def dead_anim
-        puts @timer
+      def dead_anim
         if @timer >= 0.0
             @timer -= 1.0 / 60.0
         end
