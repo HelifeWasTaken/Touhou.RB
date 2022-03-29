@@ -45,7 +45,6 @@ class PlayState < Omega::State
       @text = BlinkingText.new("Press Enter to Start")
       @text.speed = 5
       @text_game_mode = BlinkingText.new("Press R_SHIFT to modify player mode\n                  1 player mode")
-      @text_game_mode.color = Omega::Color::RED
 
       @pres = Omega::Text.new("Mattis and Raphaël present to you", $font)
       @pres.color = Omega::Color::WHITE
