@@ -1,4 +1,4 @@
-  require_relative "player.rb"
+require_relative "player.rb"
 
   module Spell
       RED = Omega::Color::RED
@@ -15,7 +15,7 @@
       attr_accessor :health_max, :health, :phase, :dead, :timer
 
       def initialize(sprite, max_frames, scale, size, health, phases, env)
-          super(sprite, max_frames, scale, size, size)
+          super(sprite, max_frames, scale, size, size, Gosu::KB_A, Gosu::KB_D)
           @phase = 0
           @health_max = health
           @health = @health_max[0]
@@ -144,9 +144,13 @@
             @position.x += (500 - @position.x) * 0.05
             @position.y += (200 - @position.y) * 0.05
         end
-        if not Omega.in_range($player.position, Omega::Vector2.new(500, 800), 20)
-            $player.position.x += (500 - $player.position.x) * 0.05
-            $player.position.y += (800 - $player.position.y) * 0.05
+        for i in 0...$player_count
+            pos = $player.get_position_of_player(i)
+            if not Omega.in_range(pos, Omega::Vector2.new(500, 800), 20)
+                pos.x += (500 - pos.x) * 0.05
+                pos.y += (800 - pos.y) * 0.05
+                $player.set_pos(pos.x, pos.y, i)
+            end
         end
     end
 
@@ -197,7 +201,7 @@ end
 class Cirno < Boss
 
     def initialize()
-        super("assets/textures/character/cirno.png", 2, 1.5, 64, [100, 150], 2, IceBiome.new())
+        super("assets/textures/character/cirno.png", 2, 1.5, 64, [1, 1], 2, IceBiome.new())
         @sleep = 0
         @phase = 0
         @type = 0
@@ -499,7 +503,9 @@ class Cirno1 < Behaviour
     end
 
     def aim(origin)
-        return Math::atan2($player.position.y - origin.y, $player.position.x - origin.x) * 180.0 / Math::PI
+        player = $player.get_random_player
+        pos = $player.get_position_of_player(player)
+        return Math::atan2(pos.y - origin.y, pos.x - origin.x) * 180.0 / Math::PI
     end
 
     def behave
@@ -672,7 +678,8 @@ class Cirno4 < Behaviour
     end
 
     def aim(origin)
-        return Math::atan2($player.position.y - origin.y, $player.position.x - origin.x) * 180.0 / Math::PI
+        position = $player.get_position_of_player($player.get_random_player)
+        return Math::atan2(position.y - origin.y, position.x - origin.x) * 180.0 / Math::PI
     end
 
     def behave
@@ -749,7 +756,8 @@ class Cirno6 < Behaviour
     end
 
     def aim(origin)
-        return Math::atan2($player.position.y - origin.y, $player.position.x - origin.x) * 180.0 / Math::PI
+        position = $player.get_position_of_player($player.get_random_player)
+        return Math::atan2(position.y - origin.y, position.x - origin.x) * 180.0 / Math::PI
     end
 
     def behave
@@ -807,7 +815,8 @@ class Cirno7 < Behaviour
     end
 
     def aim(origin)
-        return Math::atan2($player.position.y - origin.y, $player.position.x - origin.x) * 180.0 / Math::PI
+        position = $player.get_position_of_player($player.get_random_player)
+        return Math::atan2(position.y - origin.y, position.x - origin.x) * 180.0 / Math::PI
     end
 
     def behave
@@ -830,7 +839,7 @@ end
 class Whiterock < Boss
 
     def initialize()
-        super("assets/textures/character/whiterock.png", 5, 1.5, 64, [300, 450, 600], 3, IceBiome.new())
+        super("assets/textures/character/whiterock.png", 5, 1.5, 64, [1, 1, 600], 3, IceBiome.new())
         @sleep = 0
         @phase = 0
         @type = 0
@@ -868,10 +877,10 @@ class Whiterock < Boss
                 0.3
             ],
             [
-                0.3,
-                0.1,
-                0.3,
-                0.3
+                0.2,
+                0.5,
+                0.2,
+                0.1
             ]
         ]
         @env.level_up()
@@ -974,7 +983,8 @@ class Whiterock1 < Behaviour
     end
 
     def aim(origin)
-        return Math::atan2($player.position.y - origin.y, $player.position.x - origin.x) * 180.0 / Math::PI
+        position = $player.get_position_of_player($player.get_random_player)
+        return Math::atan2(position.y - origin.y, position.x - origin.x) * 180.0 / Math::PI
     end
 
     def behave
@@ -1032,7 +1042,8 @@ class Whiterock2 < Behaviour
     end
 
     def aim(origin)
-        return Math::atan2($player.position.y - origin.y, $player.position.x - origin.x) * 180.0 / Math::PI
+        position = $player.get_position_of_player($player.get_random_player)
+        return Math::atan2(position.y - origin.y, position.x - origin.x) * 180.0 / Math::PI
     end
 
     def behave
@@ -1097,7 +1108,8 @@ class Whiterock3 < Behaviour
     end
 
     def aim(origin)
-        return Math::atan2($player.position.y - origin.y, $player.position.x - origin.x) * 180.0 / Math::PI
+        position = $player.get_position_of_player($player.get_random_player)
+        return Math::atan2(position.y - origin.y, position.x - origin.x) * 180.0 / Math::PI
     end
 
     def behave
@@ -1163,15 +1175,17 @@ class Whiterock4 < Behaviour
     end
 
     def aim(origin)
-        return Math::atan2($player.position.y - origin.y, $player.position.x - origin.x) * 180.0 / Math::PI
+        position = $player.get_position_of_player($player.get_random_player)
+        return Math::atan2(position.y - origin.y, position.x - origin.x) * 180.0 / Math::PI
     end
 
     def behave
         $stop = true
         if @cd <= 0.0 && @shot > 0
+            pos = $player.get_position_of_player($player.get_random_player)
             @bullet.add_bullet_at_with_rot(
-                $player.position.x + 350 * Math::cos(@aim_angle * Math::PI / 180),
-                $player.position.y + 350 * Math::sin(@aim_angle * Math::PI / 180),
+                pos.x + 350 * Math::cos(@aim_angle * Math::PI / 180),
+                pos.y + 350 * Math::sin(@aim_angle * Math::PI / 180),
                 @aim_angle + 180)
             @shot -= 1
             @cd = 0.01
@@ -1230,23 +1244,25 @@ class Whiterock5 < Behaviour
     end
 
     def aim(origin)
-        return Math::atan2($player.position.y - origin.y, $player.position.x - origin.x) * 180.0 / Math::PI
+        position = $player.get_position_of_player($player.get_random_player)
+        return Math::atan2(position.y - origin.y, position.x - origin.x) * 180.0 / Math::PI
     end
 
     def behave
         $stop = true
         if @cd <= 0.0 && @shot > 0
+            pos = $player.get_position_of_player($player.get_random_player)
             @bullet.add_bullet_at_with_rot(
-                $player.position.x + 350 * Math::cos(@aim_angle * Math::PI / 180),
-                $player.position.y + 350 * Math::sin(@aim_angle * Math::PI / 180),
+                pos.x + 350 * Math::cos(@aim_angle * Math::PI / 180),
+                pos.y + 350 * Math::sin(@aim_angle * Math::PI / 180),
                 @aim_angle + 180)
             @bullet.add_bullet_at_with_rot(
-                $player.position.x + 450 * Math::cos(@aim_angle * Math::PI / 180),
-                $player.position.y + 450 * Math::sin(@aim_angle * Math::PI / 180),
+                pos.x + 450 * Math::cos(@aim_angle * Math::PI / 180),
+                pos.y + 450 * Math::sin(@aim_angle * Math::PI / 180),
                 @aim_angle + 180 + 10)
             @bullet.add_bullet_at_with_rot(
-                $player.position.x + 550 * Math::cos(@aim_angle * Math::PI / 180),
-                $player.position.y + 550 * Math::sin(@aim_angle * Math::PI / 180),
+                pos.x + 550 * Math::cos(@aim_angle * Math::PI / 180),
+                pos.y + 550 * Math::sin(@aim_angle * Math::PI / 180),
                 @aim_angle + 180)
             @shot -= 1
             @cd = 0.01
@@ -1303,7 +1319,8 @@ class Whiterock6 < Behaviour
     end
 
     def aim(origin)
-        return Math::atan2($player.position.y - origin.y, $player.position.x - origin.x) * 180.0 / Math::PI
+        position = $player.get_position_of_player($player.get_random_player)
+        return Math::atan2(position.y - origin.y, position.x - origin.x) * 180.0 / Math::PI
     end
 
     def behave
