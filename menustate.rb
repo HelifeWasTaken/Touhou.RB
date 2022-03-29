@@ -91,12 +91,12 @@ class MenuState < Omega::State
     end
 
     def load
+        $player = PlayerHandler.new($player_count)
         @timer = 0
         @handler = BossManager.new()
         @parallax = Omega::Parallax.new([Omega::Sprite.new("./assets/nebula2.png")])
         @parallax.set_scale(4)
-        $player.position.x = 500
-        $player.position.y = 800
+        $player.set_pos(500, 800)
         $player.health = $player.max_health
         $enemy_bullets.clear()
         $player_bullets.clear()
@@ -148,7 +148,7 @@ class MenuState < Omega::State
 
     def collision
         for bullet in $enemy_bullets
-            if bullet.rect.collides?($player.box)
+            if $player.collides?(bullet.rect)
                 $player.damage()
                 bullet.on_hit()
             end

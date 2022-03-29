@@ -53,13 +53,15 @@ class Game < Omega::RenderWindow
 
     $dummy = Omega::Vector2.new(500, 540)
 
-    $player = Player.new
+    $player = nil
 
     $misc = []
 
     $actual_boss = 0
 
     $text_box = TextBoxHandler.new()
+
+    $player_count = 2
 
     def load
         $game = self
