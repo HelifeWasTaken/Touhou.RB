@@ -6,7 +6,7 @@ class BlinkingText < Omega::Text
     super(text, $font)
 
     @alpha_go_down = false
-    @speed = 2
+    @speed = 1
   end
 
   def update
@@ -101,12 +101,13 @@ class PlayState < Omega::State
         end
 
         if Omega::just_pressed(Gosu::KB_RIGHT_SHIFT)
-          if $player_count == 1
+          @text_game_mode.alpha = 255
+          if $player_count == 2
             @text_game_mode.text = "Press R_SHIFT to modify player mode\n                  1 player mode"
-            $player_count = 2
+            $player_count = 1
           else
             @text_game_mode.text = "Press R_SHIFT to modify player mode\n                  2 players mode"
-            $player_count = 1
+            $player_count = 2
           end
         end
     end

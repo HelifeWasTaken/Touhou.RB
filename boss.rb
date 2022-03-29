@@ -126,6 +126,7 @@ require_relative "player.rb"
           @phase += 1
           @health = @health_max[@phase]
           @env.level_up
+          $player.reset_health
       end
 
       def dead_anim
@@ -839,7 +840,7 @@ end
 class Whiterock < Boss
 
     def initialize()
-        super("assets/textures/character/whiterock.png", 5, 1.5, 64, [350, 450, 600], 3, IceBiome.new())
+        super("assets/textures/character/whiterock.png", 5, 1.5, 64, [200, 250, 300], 3, IceBiome.new())
         @sleep = 0
         @phase = 0
         @type = 0

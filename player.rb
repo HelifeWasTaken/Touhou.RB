@@ -295,4 +295,10 @@ class PlayerHandler
     return @players[index].position
   end
 
+  def reset_health
+    for i in 0...@player_count do
+      @players[i].health = @players[i].max_health
+    end
+  end
+
 end
