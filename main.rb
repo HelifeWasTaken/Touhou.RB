@@ -61,7 +61,7 @@ class Game < Omega::RenderWindow
 
     $text_box = TextBoxHandler.new()
 
-    $player_count = 2
+    $player_count = 1
 
     def load
         $game = self

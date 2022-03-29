@@ -1,12 +1,12 @@
 class BlinkingText < Omega::Text
 
-    attr_accessor :speed
+  attr_accessor :speed
 
   def initialize(text)
     super(text, $font)
 
     @alpha_go_down = false
-    @speed = 10
+    @speed = 2
   end
 
   def update
@@ -25,8 +25,8 @@ class BlinkingText < Omega::Text
     end
   end
 
-  def altdraw
-      draw_at_pos(Omega::Text::WindowPos::MIDDLE, 0, 0)
+  def altdraw(x=0, y=0)
+      draw_at_pos(Omega::Text::WindowPos::MIDDLE, y, x)
   end
 
 end
@@ -43,6 +43,9 @@ class PlayState < Omega::State
       @bg.set_scale(2)
 
       @text = BlinkingText.new("Press Enter to Start")
+      @text.speed = 5
+      @text_game_mode = BlinkingText.new("Press R_SHIFT to modify player mode\n                  1 player mode")
+      @text_game_mode.color = Omega::Color::RED
 
       @pres = Omega::Text.new("Mattis and Raphaël present to you", $font)
       @pres.color = Omega::Color::WHITE
@@ -89,11 +92,22 @@ class PlayState < Omega::State
           @cardboard.alpha = 255
         end
         @text.update
+        @text_game_mode.update
 
         if (Game.is_just_pressed_ok and not Omega.is_transition?)
             transition = Omega::FadeTransition.new(10, Omega::Color::copy(Omega::Color::BLACK)) { Omega.set_state(MenuState.new) }
             Omega.launch_transition(transition)
             @text.speed *= 5
+        end
+
+        if Omega::just_pressed(Gosu::KB_RIGHT_SHIFT)
+          if $player_count == 1
+            @text_game_mode.text = "Press R_SHIFT to modify player mode\n                  1 player mode"
+            $player_count = 2
+          else
+            @text_game_mode.text = "Press R_SHIFT to modify player mode\n                  2 players mode"
+            $player_count = 1
+          end
         end
     end
 
@@ -102,6 +116,7 @@ class PlayState < Omega::State
         $camera.draw do
           @logo.draw
           @text.altdraw
+          @text_game_mode.altdraw(300, 0)
           if not @state == PState::NORMAL
             Gosu.draw_rect(0, 0, Omega.width, Omega.height, @cardboard, 1)
           end
